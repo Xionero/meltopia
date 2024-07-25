@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Make</title>
+    <style>
+        body {
+    padding: 20px;
+    background-color: #f8f9fa; /* สีพื้นหลังเพื่อให้เนื้อหาเด่นขึ้น */
+}
+
+form {
+    max-width: 500px;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+select, input, textarea {
+    font-size: 1.2em;
+    display: block;
+    margin: 10px 0; /* เพิ่มช่องว่างระหว่าง element */
+    width: calc(100% - 20px); /* ปรับขนาดกว้างของ input, select, textarea */
+}
+
+input[type="submit"] {
+    background-color: #f36542;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px; /* ให้ปุ่มส่งห่างจากข้อมูลอื่นๆ */
+}
+
+#demo, p {
+    margin-top: 20px; /* ให้ข้อความแจ้งเตือนห่างจากฟอร์ม */
+}
+
+		
+    </style>
+    <!-- CSS: Bootstrap v-5.3 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <br>
+    <br>
+    <form action="" method="post" onsubmit="return false;" accept-charset="UTF-8" autocomplete="off" name="datacard">
+        <input type="text" id="title" name="Name" placeholder="ชื่อ" required>
+        <br>
+        <!-- เปลี่ยน input เป็น select -->
+        <select id="mainJob" name="Job" required>
+            <option value="" disabled selected>เลือกอาชีพหลัก</option>
+            <option value="Warrior">Warrior</option>
+            <option value="Archer">Archer</option>
+            <option value="Monk">Monk</option>
+            <option value="Thief">Thief</option>
+            <option value="Lancer">Lancer</option>
+            <option value="Necromancer">Necromancer</option>
+            <option value="Samurai">Samurai</option>
+            <option value="Ninja">Ninja</option>
+            <option value="Magic Sword">Magic Sword</option>
+            <option value="Wizard">Wizard</option>
+            <option value="Priest">Priest</option>
+            <option value="Summoner">Summoner</option>
+            <option value="Time Mage">Time Mage</option>
+            <option value="Sorcerer">Sorcerer</option>
+        </select>
+        <br>
+        <!-- เปลี่ยน input เป็น select -->
+        <select id="subJob" name="SubJob" required>
+            <option value="">เลือกอาชีพรอง</option>
+            <option value="Angler">Angler</option>
+            <option value="Archaeologist">Archaeologist</option>
+            <option value="Chef">Chef</option>
+            <option value="Detective">Detective</option>
+            <option value="Library">Library</option>
+            <option value="Merchant">Merchant</option>
+            <option value="Spy">Spy</option>
+        </select>
+        <br>
+        <!-- เปลี่ยน input เป็น select -->
+        <select id="race" name="race" required>
+            <option value="" disabled selected>เลือกเผ่า</option>
+            <option value="Human">Human</option>
+            <option value="Elf">Elf</option>
+            <option value="Fallen Angel">Fallen Angel</option>
+            <option value="Half Demon">Half Demon</option>
+            <option value="Dragon">Dragon</option>
+            <option value="Cait Sith">Cait Sith</option>
+            <option value="Goblin">Goblin</option>
+            <option value="Orc">Orc</option>
+            <option value="Ogre">Ogre</option>
+            <option value="Dryad">Dryad</option>
+            <option value="Vampire">Vampire</option>
+            <option value="Werewolf">Werewolf</option>            
+        </select>
+        <br>
+        <input type="text" id="answer" name="image" placeholder="Urlรูปที่แสดงในบัตร แปะลิงค์รูป" required>
+        <br>
+		
+		<input type="hidden" id="zeny" name="Zeny" value="0">
+
+        <div class="text-center">
+            <input type="submit" value="ส่ง" onclick="showModal()">
+        </div>
+        <!-- แสดงข้อความ -->
+        <p id="demo"></p>
+    </form>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">ยืนยันการส่งข้อมูล</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>              
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">ส่งเรียบร้อยแล้ว</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-center">
+                    <p id="successMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1piVKZij8VJnYzwDG03BCXQQX1sPlcWYcDFjpT9WiPJQROYGmKFGzhqRtDqy5E7CBkQ/exec';
+const form = document.forms['datacard'];
+const submitButton = form.querySelector('input[type="submit"]');
+
+function showModal() {
+    $('#confirmationModal').modal('show');
+}
+
+function submitForm() {
+    $('#confirmationModal').modal('hide');
+
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+            form.reset();
+            $('#successModal').modal('show');
+            setTimeout(() => {
+                $('#successModal').modal('hide');
+                // Re-enable the submit button after 3 seconds
+                submitButton.disabled = false;
+            }, 3000); // 3000 milliseconds = 3 seconds
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            // Re-enable the submit button in case of error
+            submitButton.disabled = false;
+        });
+}
+
+function submitForm() {
+    $('#confirmationModal').modal('hide');
+
+    // ตรวจสอบว่าทุก input/select มีค่าหรือไม่
+    if (form.Name.value && form.Job.value && form.SubJob.value && form.race.value && form.image.value) {
+        // ส่งข้อมูลไปยัง Google Apps Script
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                form.reset();
+                $('#successModal').modal('show');
+                setTimeout(() => {
+                    $('#successModal').modal('hide');
+                    // หลังจากนั้นเปิดปุ่มส่งให้ใช้งานได้อีกครั้ง
+                    submitButton.disabled = false;
+                }, 3000); // 3000 milliseconds = 3 seconds
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                // เปิดปุ่มส่งให้ใช้งานได้อีกครั้งในกรณีเกิดข้อผิดพลาด
+                submitButton.disabled = false;
+            });
+    } else {
+        // ถ้าข้อมูลไม่ครบแสดงข้อความแจ้งเตือน
+        document.getElementById('demo').innerHTML = "กรุณากรอกข้อมูลให้ครบถ้วน";
+    }
+}
+
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

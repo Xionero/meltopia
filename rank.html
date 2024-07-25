@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Tables</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .table-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 18px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        td {
+            background-color: #fff;
+        }
+        .table-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .blue th {
+            background-color: #d0e8ff;
+        }
+        .blue tbody tr:nth-child(even) {
+            background-color: #f0f8ff;
+        }
+        .orange th {
+            background-color: #ffe5cc;
+        }
+        .orange tbody tr:nth-child(even) {
+            background-color: #fff2e6;
+        }
+        .green th {
+            background-color: #d9f2d9;
+        }
+        .green tbody tr:nth-child(even) {
+            background-color: #e6f7e6;
+        }
+
+        /* เพิ่ม media query เพื่อปรับขนาดตารางให้เหมาะสมในหน้าจอขนาดเล็ก */
+        @media (max-width: 768px) {
+            table {
+                width: 90%; /* ปรับขนาดตารางให้กว้างลงเมื่อหน้าจอเล็กลง */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="table-container">
+        <div>
+            <div class="table-title">1-6 2024</div>
+            <table class="blue">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Lockon stratos</td>
+                        <td>155</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>MaiMeeRaiThum SharkWoW</td>
+                        <td>127</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Alicia Ehnleit</td>
+                        <td>90</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>PANDA DESUGA?</td>
+                        <td>82</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>GOD OF MON</td>
+                        <td>68</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>แมวกล่อง เมี้ยว</td>
+                        <td>67</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>kanz</td>
+                        <td>52</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>KoonBird Ch</td>
+                        <td>44</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>rani</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>Kill kung💀</td>
+                        <td>26</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>L L</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>Otokaze Fuu</td>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>HunterHeroZX</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>kaJLop3501prow 1329sQkra</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>{[OS]}</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div>
+            <div class="table-title">6-12 2023</div>
+            <table class="orange">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <td>1</td>
+                        <td>Lockon stratos</td>
+                        <td>341</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>KoonBird Ch</td>
+                        <td>247</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>MaiMeeRaiThum SharkWoW</td>
+                        <td>235</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Klaudia 🧙</td>
+                        <td>185</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>PANDA DESUGA?</td>
+                        <td>169</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>ตัวทำลายระบบนิเวศ</td>
+                        <td>120</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>GOD OF MON</td>
+                        <td>115</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Kill kung💀</td>
+                        <td>113</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Otoamekaze fuu</td>
+                        <td>110</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>แมวกล่อง เมี้ยว</td>
+                        <td>110</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>rani</td>
+                        <td>82</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>kanz</td>
+                        <td>37</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>SusanoDeku</td>
+                        <td>13</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>กรดอะมิโน</td>
+                        <td>13</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>kaJLop3501prow 1329sQkra</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td>OS</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>17</td>
+                        <td>TF CH</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>18</td>
+                        <td>Dechit p</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>19</td>
+                        <td>Blackcat 8ชีวิต</td>
+                        <td>2</td>
+                        <tr>
+                            <td>20</td>
+                            <td>He1i0Z</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td>หญ้าหลังบ้าน</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>22</td>
+                            <td>Mix78x OpO</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>23</td>
+                            <td>จิรวุฒิ-Ukaw</td>
+                            <td>1</td>
+                        </tr>                      
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <div class="table-title">1-6 2023</div>
+            <table class="green">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Lockon stratos</td>
+                        <td>337</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>KoonBird Ch</td>
+                        <td>317</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Kill kung💀</td>
+                        <td>128</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>PANDA DESUGA?</td>
+                        <td>116</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>MaiMeeRaiThum SharkWoW</td>
+                        <td>96</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>GOD OF MON</td>
+                        <td>93</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>rani</td>
+                        <td>76</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Hanazono Lily 🕵‍♂</td>
+                        <td>66</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>猫พรนภา卍แมวกล่อง</td>
+                        <td>48</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>สามารถ ธนวัตมากมี</td>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>Aids phinseng</td>
+                        <td>35</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>BestKungXD</td>
+                        <td>35</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>TF CH</td>
+                        <td>35</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>Mukuro _Hi_</td>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>Kanz</td>
+                        <td>19</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

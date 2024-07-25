@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meltopia Citizen</title>
+  <style>
+    body {
+      font-family: 'Yu Gothic', 'Arial', sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    #leaderboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .profile-pic {
+      width: 90px;
+      height: 120px;
+      margin-right: 20px;
+      border-radius: 5px;
+      border: 4px solid #000;
+      object-fit: cover;
+    }
+    .card-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-top: 0px; /* Adjust margin as needed */
+    }
+    .card-header {
+      font-size: 20px;
+      margin-bottom: 0px;
+      color: #333;
+      font-weight: bold;
+      position: relative;
+      padding-bottom: 0;
+      text-align: center;
+      width: 100%;
+      transform: translateY(-13px); /* Adjust the value as needed */
+    }
+    .card-header::after {
+      content: "";
+      display: block;
+      width: calc(100% - 30px);
+      height: 2px;
+      background-color: #333;
+      position: absolute;
+      bottom: 0;
+      left: 15px;
+    }
+    .race-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px; /* Adjust size */
+      height: 40px; /* Adjust size */
+      border-radius: 50%; /* Make circular */
+      border: 2px solid #333; /* Thinner border */
+      object-fit: cover;
+    }
+    .additional-race-icon {
+      position: absolute;
+      top: 55px; /* Adjust position below the first icon */
+      right: 10px;
+      width: 40px; /* Adjust size */
+      height: 40px; /* Adjust size */
+      border-radius: 50%; /* Make circular */
+      border: 2px solid #333; /* Thinner border */
+      object-fit: cover;
+    }
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: -10px; /* Move details up closer to the header */
+    }
+    .card p {
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+      font-size: 14px;
+    }
+    .card p span {
+      font-weight: bold;
+      text-align: left;
+      margin-right: 10px;
+    }
+    .card p .value {
+      text-align: left;
+    }
+    .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 16px;
+    }
+    .name-long {
+      font-size: 12px;
+    }
+    .name-longest {
+      font-size: 8px;
+    }
+    .zeny-0 {
+      background-color: #e0e0e0;
+      border-color: #d3d3d3;
+    }
+    .zeny-1-99 {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+    .zeny-100-499 {
+      background-color: #cce5ff;
+      border-color: #b8daff;
+    }
+    .zeny-500-999 {
+      background-color: #f5c6cb;
+      border-color: #f1b0b7;
+    }
+    .zeny-1000-plus {
+      background-color: #fff3cd;
+      border-color: #ffeeba;
+    }
+    .zeny-infinity {
+      background-color: #383838 !important; /* สีพื้นหลังเป็นสีดำ */
+      border-color: #1f1f1f !important; /* สีขอบเป็นสีดำ */
+    }
+    .zeny-infinity .card-header, 
+    .zeny-infinity .card-details p {
+      color: #eeeeee !important; /* สีข้อความเป็นสีขาว */
+    }
+    .zeny-infinity .card-header::after {
+      background-color: #eeeeee !important; /* สีขีดใต้เป็นสีขาว */
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background-color: #eee;
+      border-radius: 5px;
+      margin-top: 10px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #7ee2a4;
+      border-radius: 5px;
+      width: 0;
+      transition: width 0.3s;
+    }
+    .progress-bar-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="leaderboard">
+    <!-- ข้อมูลบัตรประชาชนจะถูกแสดงที่นี่ -->
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+    
+    setInterval(fetchLeaderboard, 3000);
+
+    function fetchLeaderboard() {
+      fetch('https://script.google.com/macros/s/AKfycbxBShxdgie2wmbWPWEkq5DntfNZcZP_uGVDO1eNHVQRyrXjLyquCF5GphhuorYTPXYE2A/exec')
+        .then(response => response.json())
+        .then(data => {
+          const leaderboard = document.getElementById('leaderboard');
+          leaderboard.innerHTML = ""; 
+          data.slice(0, 15).forEach((row) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            if (row.zeny === '∞') {
+              card.classList.add('zeny-infinity');
+            } else if (row.zeny >= 1000) {
+              card.classList.add('zeny-1000-plus');
+            } else if (row.zeny >= 500) {
+              card.classList.add('zeny-500-999');
+            } else if (row.zeny >= 100) {
+              card.classList.add('zeny-100-499');
+            } else if (row.zeny >= 1) {
+              card.classList.add('zeny-1-99');
+            } else {
+              card.classList.add('zeny-0');
+            }
+
+            let nameClass = 'name';
+            if (row.name.length > 30) {
+              nameClass = 'name-longest';
+            } else if (row.name.length > 20) {
+              nameClass = 'name-long';
+            }
+
+            let raceIcon = '';
+            const validRaces = ['Human', 'Elf', 'Fallen Angel', 'Half Demon', 'Dragon', 'Cait Sith', 'Goblin', 'Orc', 'Ogre', 'Dryad', 'Vampire', 'Werewolf', 'Unknow'];
+            if (validRaces.includes(row.race)) {
+              raceIcon = `<img src="race/${row.race.toLowerCase().replace(' ', '_')}.png" alt="${row.race} icon" class="race-icon">`;
+            }
+
+            let additionalRaceIcon = '';
+            if (row.name === '//////////////Meltopia\\\\\\\\\\\\\\') {
+              additionalRaceIcon = `<img src="race/a.png" alt="Additional Race Icon" class="additional-race-icon">`;
+            } else if (row.name === 'รนิภารัตร์ พงพิสุทธิ์') {
+              additionalRaceIcon = `<img src="race/m.png" alt="Additional Race Icon" class="additional-race-icon">`;
+            } else if (row.name === 'รนิภารัตร์ พงพิสุทธิ์') {
+              additionalRaceIcon = `<img src="race/m.png" alt="Additional Race Icon" class="additional-race-icon">`;
+            }
+
+            const { level, remainingEXP } = calculateLevel(row.exp);
+            const expTable = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60];
+            const nextLevelExp = level < 20 ? expTable[level] : expTable.slice(1, 21).reduce((acc, val) => acc + val, 0);
+            const progressPercentage = level < 20 ? (remainingEXP / nextLevelExp) * 100 : 100;
+
+            const levelText = level < 20 ? `${level}` : '20 Max';
+
+            card.innerHTML = `
+              <div class="card-header">
+                Meltopia Association Card
+              </div>
+              <div class="card-content">
+                <img src="${row.image}" alt="Profile Picture" class="profile-pic">
+                <div class="card-details">
+                  <p><span>Name&nbsp;:&nbsp;</span> <span class="${nameClass} value">${row.name}</span></p>
+                  <p><span>Lv&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="value">${levelText}</span></p>
+                  <p><span>Race&nbsp;:&nbsp;&nbsp;</span> <span class="value">${row.race}</span></p>
+                  <p><span>Job&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="value">${row.mainJob}</span></p>
+                  <p><span>SubJob&nbsp;:</span> <span class="value">${row.subJob}</span></p> 
+                  <p><span>Zeny&nbsp;:&nbsp;&nbsp;</span> <span class="value">${row.zeny}</span></p>
+                </div>
+              </div>
+              ${raceIcon}
+              ${additionalRaceIcon}
+              <div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${progressPercentage}%"></div>
+                <div class="progress-bar-text">${Math.round(progressPercentage)}%</div>
+              </div>
+            `;
+            leaderboard.appendChild(card);
+          });
+        })
+        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error));
+    }
+
+    function calculateLevel(exp) {
+      const expTable = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60];
+      let level = 1;
+      let accumulatedEXP = 0;
+
+      while (level < expTable.length && exp >= accumulatedEXP + expTable[level]) {
+        accumulatedEXP += expTable[level];
+        level++;
+      }
+
+      // Cap the level at 20
+      if (level > 20) {
+        level = 20;
+        accumulatedEXP = expTable.slice(1, 21).reduce((acc, val) => acc + val, 0);
+      }
+
+      const remainingEXP = exp - accumulatedEXP;
+
+      return { level, remainingEXP };
+    }
+  </script>
+</body>
+</html>

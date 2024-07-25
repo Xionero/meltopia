@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Game</title>
+    <div id="notification" class="hidden"></div>
+    <link rel="stylesheet" href="ecarddata/styles.css">
+</head>
+<body>
+    <div id="game">
+        <div id="choose-side" style="display: grid; place-items: center;">
+            <h2>E-Card Game</h2>
+            <h3>1.ผู้เล่นมีสิทธิจะเลือกว่าเป็น ราชา หรือ ทาส</h3>
+            <h3>2.ผู้เล่นจะได้ การ์ด 5 ใบ แบ่งเป็น ชาวเมือง 4 ทาส/ราชา 1 ใบ</h3>
+            <h3>3.ราชา ชนะ ชาวเมือง ชนะ ทาส ชนะ ราชา</h3>
+            <h3>4.ราชาจะมีโอกาศชนะสูงมาก ถ้าเสมอจะต้องเล่นต่อไปจนกว่าจะแพ้หรือชนะ</h3>
+            <h3>5.เมื่อราชาชนะจะได้ 1 แต้ม เมื่อทาสชนะจะได้ 5 แต้ม</h3>   
+            <h3>เลือกฝ่ายเพื่อเข้าเล่น</h3>      
+            <input type="text" id="player-name" placeholder="ใส่ชื่อ Youtube">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="king-button" onclick="chooseKing()">King</button>
+                <button id="slave-button" onclick="chooseSlave()">Slave</button>   
+            </div>
+        </div>
+        
+        
+        <div id="game-board" style="display: none;">
+            <div id="opponent-area" class="game-area">
+                <h3>Enemy</h3>
+                <div id="opponent-chosen" class="chosen-card"></div>
+            </div>
+
+            <div id="king-area" class="game-area" style="display: none;">       
+                <div id="king-chosen" class="chosen-card"></div>
+                <div id="king-cards" class="card-container"></div>  
+                <h3>King</h3> 
+            </div>
+       
+            <div id="slave-area" class="game-area" style="display: none;">
+               
+                <div id="slave-chosen" class="chosen-card"></div>
+                <div id="slave-cards" class="card-container"></div>    
+                <h3>Slave</h3>       
+            </div>           
+            <button id="confirm-king-button" style="display: none;" onclick="confirmKingSelection()">ยืนยัน</button>
+            <button id="confirm-slave-button" style="display: none;" onclick="confirmSlaveSelection()">ยืนยัน</button>
+        </div>
+    </div>
+
+    <!-- Form for submitting data to Google Apps Script -->
+    <form id="result-form" style="display: none;">
+        <input id="form-player-name" name="playername" type="text">
+        <input id="form-player-side" name="playerside" type="text">
+        <input id="form-player-result" name="playerresult" type="text">
+        <button id="submit-button" type="button" onclick="submitForm()">Send</button>
+    </form>
+
+    <!-- Include SweetAlert2 library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
+
+    <!-- JavaScript for the game logic and interaction -->
+    <script>
+        let availableKingCards = ['Citizen', 'Citizen', 'Citizen', 'Citizen', 'King'];
+        let availableSlaveCards = ['Citizen', 'Citizen', 'Citizen', 'Citizen', 'Slave'];
+
+        function chooseKing() {
+            const playerName = document.getElementById('player-name').value;
+            if (playerName.trim() === '') {
+                alert('กรุณาใส่ชื่อ');
+                return;
+            }
+
+            document.getElementById('choose-side').style.display = 'none';
+            document.getElementById('game-board').style.display = 'block';
+            document.getElementById('king-area').style.display = 'block';
+            document.getElementById('confirm-king-button').style.display = 'block';
+
+            document.getElementById('form-player-name').value = playerName;
+            document.getElementById('form-player-side').value = 'King';
+
+            setupKing();
+        }
+
+        function setupKing() {
+    // สุ่มลำดับการ์ด King และ Citizen ที่จะให้ผู้เล่นเลือก
+    shuffleArray(availableKingCards);
+    
+    const kingCardsContainer = document.getElementById('king-cards');
+    kingCardsContainer.innerHTML = generateKingCardsHTML();
+    addCardEventListeners('king');
+}
+
+        function generateKingCardsHTML() {
+            let cardsHTML = '';
+            availableKingCards.forEach(cardType => {
+                let cardImage = '';
+                if (cardType === 'Citizen') {
+                    cardImage = 'ecarddata/citizen.jpg';
+                } else if (cardType === 'King') {
+                    cardImage = 'ecarddata/king.jpg';
+                }
+                cardsHTML += `<div class="card king ${cardType.toLowerCase()}" data-card="${cardType}">
+                                <img src="${cardImage}" alt="${cardType}" />
+                              </div>`;
+            });
+            return cardsHTML;
+        }
+
+        function addCardEventListeners(side) {
+            const cards = document.querySelectorAll(`.card.${side}`);
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    selectCard(this, side);
+                });
+            });
+        }
+
+        function selectCard(cardElement, side) {
+            if (!cardClickable) {
+        return; // ไม่ทำงานถ้าไม่สามารถคลิกได้
+    }
+    if (cardElement.classList.contains('selected')) {
+        return;
+    }
+
+    const previouslySelected = document.querySelector(`.card.selected.${side}`);
+    if (previouslySelected) {
+        previouslySelected.classList.remove('selected');
+    }
+
+    cardElement.classList.add('selected');
+
+    // Get the card container for the selected side
+    const cardContainer = document.getElementById(`${side}-cards`);
+    if (!cardContainer) {
+        return; // Exit if card container not found
+    }
+
+    // Show all cards in the container
+    const cards = cardContainer.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.display = 'block';
+    });
+
+    // Hide the selected card
+    cardElement.style.display = 'none';
+
+    // Update the chosen card area
+    const chosenCardArea = document.getElementById(`${side}-chosen`);
+    if (chosenCardArea) {
+        chosenCardArea.innerHTML = `<img src="${cardElement.querySelector('img').src}" alt="${cardElement.dataset.card}" />`;
+    }
+
+    // Reset opponent chosen card area
+    const opponentChosen = document.getElementById('opponent-chosen');
+    opponentChosen.innerHTML = `<img src="ecarddata/back.jpg" alt="Back" />`;
+}
+
+let cardClickable = true;
+
+function confirmKingSelection() {
+    const selectedKingCard = document.querySelector('.card.selected.king');
+    if (!selectedKingCard) {
+        alert('กรุณาเลือกไพ่');
+        return;
+    }
+    handleButtonCooldown('confirm-king-button');
+    
+
+    // ปิดการคลิกการ์ดชั่วคราว
+    cardClickable = false;
+
+    const playerCard = selectedKingCard.dataset.card;
+    const selectedCardIndex = availableKingCards.indexOf(playerCard);
+    if (selectedCardIndex !== -1) {
+        availableKingCards.splice(selectedCardIndex, 1);
+    }
+
+    // เลือกการ์ดของตรงข้าม
+    let opponentCard = opponentSelectCard('slave');
+
+    // แสดงการ์ดที่เลือกของผู้เล่นและตรงข้าม
+    const opponentChosen = document.getElementById('opponent-chosen');
+    opponentChosen.innerHTML = `<img src="${getCardImage(opponentCard)}" alt="${opponentCard}" />`;
+
+    const kingChosen = document.getElementById('king-chosen');
+    kingChosen.innerHTML = `<img src="${getCardImage(playerCard)}" alt="${playerCard}" />`;
+
+    const kingCardsContainer = document.getElementById('king-cards');
+    kingCardsContainer.innerHTML = generateKingCardsHTML();
+    addCardEventListeners('king');
+
+    setTimeout(() => {
+        let resultMessage;
+
+        if (playerCard === 'Citizen' && opponentCard === 'Citizen') {
+            resultMessage = 'เสมอ';
+        } else if (playerCard === 'Citizen' && opponentCard === 'Slave') {
+            resultMessage = 'คุณชนะ';
+        } else if (playerCard === 'King' && opponentCard === 'Slave') {
+            resultMessage = 'คุณแพ้';
+        } else if (playerCard === 'King' && opponentCard === 'Citizen') {
+            resultMessage = 'คุณชนะ';
+        }
+
+        if (resultMessage) {
+            if (resultMessage !== 'เสมอ') {
+                document.getElementById('form-player-result').value = resultMessage;
+                submitForm();
+            }
+            showNotification(resultMessage);
+
+            // ซ่อนการ์ดที่เลือกและการ์ดของตรงข้ามหลังจาก 3 วินาที
+            setTimeout(() => {
+                selectedKingCard.style.display = 'none';
+                opponentChosen.innerHTML = `<img src="ecarddata/back.jpg" alt="Back" />`;
+                kingChosen.innerHTML = '';
+
+                // เปิดการคลิกการ์ดอีกครั้ง
+                cardClickable = true;
+            }, 3000);
+
+            // รีเซ็ตเกมหลังจากผู้เล่นชนะหรือแพ้
+            if (resultMessage !== 'เสมอ') {
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // รีเซ็ตเกมหลังจาก 5 วินาที หลังจากที่แสดงผลลัพธ์
+            }
+        }
+    }, 100);
+}
+
+
+
+        function chooseSlave() {
+            const playerName = document.getElementById('player-name').value;
+            if (playerName.trim() === '') {
+                alert('กรุณาใส่ชื่อ');
+                return;
+            }
+
+            document.getElementById('choose-side').style.display = 'none';
+            document.getElementById('game-board').style.display = 'block';
+            document.getElementById('slave-area').style.display = 'block';
+            document.getElementById('confirm-slave-button').style.display = 'block';
+
+            document.getElementById('form-player-name').value = playerName;
+            document.getElementById('form-player-side').value = 'Slave';
+
+            setupSlave();
+        }
+
+        function setupSlave() {
+    // สุ่มลำดับการ์ด Slave และ Citizen ที่จะให้ผู้เล่นเลือก
+    shuffleArray(availableSlaveCards);
+    
+    const slaveCardsContainer = document.getElementById('slave-cards');
+    slaveCardsContainer.innerHTML = generateSlaveCardsHTML();
+    addCardEventListeners('slave');
+}
+
+        function generateSlaveCardsHTML() {
+            let cardsHTML = '';
+            availableSlaveCards.forEach(cardType => {
+                let cardImage = '';
+                if (cardType === 'Citizen') {
+                    cardImage = 'ecarddata/citizen.jpg';
+                } else if (cardType === 'Slave') {
+                    cardImage = 'ecarddata/slave.jpg';
+                }
+                cardsHTML += `<div class="card slave ${cardType.toLowerCase()}" data-card="${cardType}">
+                                <img src="${cardImage}" alt="${cardType}" />
+                              </div>`;
+            });
+            return cardsHTML;
+        }
+
+        function confirmSlaveSelection() {
+    const selectedSlaveCard = document.querySelector('.card.selected.slave');
+    if (!selectedSlaveCard) {
+        alert('กรุณาเลือกไพ่');
+        return;
+    }
+
+    handleButtonCooldown('confirm-slave-button');
+    cardClickable = false;
+
+    const playerCard = selectedSlaveCard.dataset.card;
+    const selectedCardIndex = availableSlaveCards.indexOf(playerCard);
+    if (selectedCardIndex !== -1) {
+        availableSlaveCards.splice(selectedCardIndex, 1);
+    }
+
+    let opponentCard = opponentSelectCard('king');
+    const opponentChosen = document.getElementById('opponent-chosen');
+    opponentChosen.innerHTML = `<img src="${getCardImage(opponentCard)}" alt="${opponentCard}" />`;
+
+    const slaveChosen = document.getElementById('slave-chosen');
+    slaveChosen.innerHTML = `<img src="${getCardImage(playerCard)}" alt="${playerCard}" />`;
+
+    const slaveCardsContainer = document.getElementById('slave-cards');
+    slaveCardsContainer.innerHTML = generateSlaveCardsHTML();
+    addCardEventListeners('slave');
+
+    setTimeout(() => {
+        let resultMessage;
+
+        if (playerCard === 'Citizen' && opponentCard === 'Citizen') {
+            resultMessage = 'เสมอ';
+        } else if (playerCard === 'Citizen' && opponentCard === 'King') {
+            resultMessage = 'คุณแพ้';
+        } else if (playerCard === 'Slave' && opponentCard === 'King') {
+            resultMessage = 'คุณชนะ';
+        } else if (playerCard === 'Slave' && opponentCard === 'Citizen') {
+            resultMessage = 'คุณแพ้';
+        }
+
+        if (resultMessage) {
+            if (resultMessage !== 'เสมอ') {
+                document.getElementById('form-player-result').value = resultMessage;
+                submitForm(); 
+            }
+            showNotification(resultMessage);
+
+            // ซ่อนการ์ดที่เลือกแล้วหลังจาก 3 วินาที
+            setTimeout(() => {
+                selectedSlaveCard.style.display = 'none';
+                opponentChosen.innerHTML = `<img src="ecarddata/back.jpg" alt="Back" />`;
+                slaveChosen.innerHTML = '';
+            // เปิดการคลิกการ์ดอีกครั้ง
+            cardClickable = true;
+            }, 3000);
+
+            // รีเซ็ตเกมหลังจากผู้เล่นชนะหรือแพ้
+            if (resultMessage !== 'เสมอ') {
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // รีเซ็ตเกมหลังจาก 5 วินาที หลังจากที่แสดงผลลัพธ์
+            }
+        }
+    }, 100);
+}
+
+
+function opponentSelectCard(opponentSide) {
+    const availableCards = opponentSide === 'king' ? availableKingCards.slice() : availableSlaveCards.slice();
+    const randomIndex = Math.floor(Math.random() * availableCards.length);
+    const selectedCard = availableCards[randomIndex];
+    
+    // ลบการ์ดที่เลือกไปแล้วออกจากชุดการ์ดที่เหลืออยู่
+    if (opponentSide === 'king') {
+        availableKingCards.splice(availableKingCards.indexOf(selectedCard), 1);
+    } else {
+        availableSlaveCards.splice(availableSlaveCards.indexOf(selectedCard), 1);
+    }
+
+    return selectedCard;
+}
+
+
+        function getCardImage(cardType) {
+            switch (cardType) {
+                case 'Citizen':
+                    return 'ecarddata/citizen.jpg';
+                case 'King':
+                    return 'ecarddata/king.jpg';
+                case 'Slave':
+                    return 'ecarddata/slave.jpg';
+                default:
+                    return '';
+            }
+        }
+
+        function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+        function submitForm() {
+            const form = document.getElementById('result-form');
+            const formData = new FormData(form);
+
+            fetch('https://script.google.com/macros/s/AKfycbwppHpxaCQUtcDL7DLS0WRA2czV32s4fhWAFvL2FenWTgUGsHSXIVJQxjMbrp-VpJIR1g/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Data sent successfully');
+                    return response.json();
+                } else {
+                    throw new Error('Failed to send data');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                // Handle response as needed (optional)
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+        }
+
+        function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.innerText = message;
+    notification.classList.remove('hidden');
+    
+    setTimeout(() => {
+        notification.classList.add('hidden');
+    }, 2000); // Adjust the time as needed
+}
+
+function handleButtonCooldown(buttonId) {
+        var button = document.getElementById(buttonId);
+        button.disabled = true;
+        setTimeout(function() {
+            button.disabled = false;
+        }, 2000); // 3000 milliseconds = 3 seconds
+    }
+    </script>
+
+
+</body>
+</html>

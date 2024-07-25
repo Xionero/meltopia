@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ส่งคำถาม</title>
+    <style>
+        form {
+            max-width: 500px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* จัดตำแหน่งของรายการทั้งหมดในฟอร์มไปที่กลาง */
+        }
+
+        label {
+            font-size: 1.5em; 
+            display: block;
+            margin: 5px 0;
+        }
+
+        input {
+            font-size: 1.2em; /* ปรับขนาดตัวอักษรลงเล็กน้อย */
+            display: block;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        textarea {
+            font-size: 1.2em; 
+            display: block;
+            margin: 5px 0;
+        }
+
+        input[type="submit"] {
+            background-color: #9DEFFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            text-align: center;
+            background-color: #8AEFFF;
+        }
+
+        #error-message {
+            color: red;
+        }
+
+        .modal-backdrop {
+            display: none;
+        }
+
+        .modal-dialog {
+            z-index: 1055;
+        }
+		
+    </style>
+    <!-- CSS: Bootstrap v-5.3 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <br>
+    <br>
+    <form action="" method="post" onsubmit="return false;" accept-charset="UTF-8" autocomplete="off" name="question">
+        <input type="text" id="sender" name="youtube_name" placeholder="YoutubeName" required>
+        <br>
+        <input type="text" id="title" name="anime_name" placeholder="AnimeName" required>
+        <br>
+        <textarea id="question" name="ask" placeholder="ช่องสำหรับใส่คำถาม" rows="4" cols="50" required></textarea>
+        <br>
+        <textarea id="answer" name="answer" placeholder="ช่องสำหรับใส่คำตอบ" rows="4" cols="50" required></textarea>
+        <br>
+        <div class="text-center"> <!-- แก้ไขที่นี่จาก col-12 text-end เป็น text-center -->
+            <input type="submit" value="ส่ง" onclick="showModal()">
+        </div>
+        <!-- Message Display -->
+        <p id="demo"></p>
+        <p>กรุณากรอกข้อมูลให้ครบถ้วน</p>
+    </form>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">ยืนยันการส่งข้อมูล</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>              
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">สถานะการส่งข้อมูล</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-center">
+                    <p id="successMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxhxlJYmotLw2T14jaELYbXbo3LcBGSFg0Tiw9DHzHwMNMoWcXrYtP7AcX60pyr4HXEjQ/exec';
+        const form = document.forms['question'];
+        const submitButton = form.querySelector('input[type="submit"]');
+
+        function showModal() {
+            $('#confirmationModal').modal('show');
+        }
+
+        function submitForm() {
+            $('#confirmationModal').modal('hide');
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    const message = "<div class='alert alert-primary' role='alert'><b>ได้รับเรียบร้อยแล้วขอบคุณที่ร่วมสนุก</b></div>";
+                    document.getElementById("demo").innerHTML = message;
+                    form.reset();
+                    $('#successModal').modal('show');
+                    setTimeout(() => {
+                        $('#successModal').modal('hide');
+                        document.getElementById("demo").innerHTML = '';
+                        // Re-enable the submit button after 3 seconds
+                        submitButton.disabled = false;
+                    }, 3000); // 3000 milliseconds = 3 seconds
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    // Re-enable the submit button in case of error
+                    submitButton.disabled = false;
+                });
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

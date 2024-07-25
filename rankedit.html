@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard</title>
+  <style>
+    /* CSS สำหรับการจัดรูปแบบของตาราง */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e; /* Dark gray background */
+      color: #fff; /* White text */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h2 {
+      text-align: center;
+      color: #fff; /* White text */
+      font-size: 24px; /* Larger font size */
+      font-weight: bold; /* Bold text */
+      margin-top: 20px; /* Increased top margin */
+    }
+    table {
+      border-collapse: collapse;
+      width: 400px; /* Adjusted table width */
+      height: 800px; /* Adjusted table height */
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Darker shadow */
+      background-color: #2e2e2e; /* Dark gray background */
+    }
+    th, td {
+      border: 1px solid #444; /* Darker border */
+      padding: 10px; /* Adjusted padding */
+      text-align: center; /* Center align text */
+    }
+    th {
+      background-color: #3e3e3e; /* Darker gray background */
+      color: #ccc; /* Light gray text */
+      font-weight: normal;
+    }
+    tr:nth-child(even) {
+      background-color: #333; /* Darker even row background */
+    }
+    tr:hover {
+      background-color: #444; /* Darker hover background */
+    }
+  </style>
+</head>
+<body>
+  <table id="leaderboard">
+    <thead>
+    </thead>
+    <tbody id="leaderboard-body">
+      <!-- ข้อมูลอันดับจะถูกแสดงที่นี่ -->
+    </tbody>
+  </table>
+
+  <script>
+    // JavaScript เพื่อดึงข้อมูลจาก Google Sheet
+    document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+    
+    // Fetch leaderboard data every 3 seconds
+    setInterval(fetchLeaderboard, 3000);
+
+    function fetchLeaderboard() {
+      fetch('https://script.google.com/macros/s/AKfycbyVzbXTuxANg_iJ2TvE4PWjF3cVvAWZNJ2KIdRVJx-weSq42sghmDhKxfh02YEMsGA/exec')
+        .then(response => response.json())
+        .then(data => {
+          const leaderboardBody = document.getElementById('leaderboard-body');
+          leaderboardBody.innerHTML = ""; // Clear previous data
+          data.slice(0, 15).forEach((row, index) => { // Slice the data array to get the top 15
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+              <td>${index + 1}</td>
+              <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${row.name}</td>
+              <td>${row.score}</td>
+            `;
+            leaderboardBody.appendChild(newRow);
+          });
+        })
+        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error));
+    }
+  </script>
+</body>
+</html>
