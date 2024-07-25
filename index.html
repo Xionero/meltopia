@@ -26,7 +26,7 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
- <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
   <!-- =======================================================
   * Template Name: MyResume
   * Template URL: https://bootstrapmade.com/free-html-bootstrap-template-my-resume/
@@ -69,7 +69,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-9">
             <h2>Meltopia</h2>
-            <p>I'm <span id="typed"></span></p>
+            <p>I'm <span class="typed" data-typed-items="CatLover, GameMaker, Hunter"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
             <div class="social-links">        
               <a href="https://www.facebook.com/neotopiadimension"><i class="bi bi-facebook"></i></a>
               <a href="https://www.youtube.com/@meltopiadimension"><i class="bi bi-youtube"></i></a>
@@ -327,18 +327,6 @@
         font-weight: bold;
         cursor: pointer;
     }
-
-    .typed-cursor {
-    font-size: 16px;
-    color: #000;
-    animation: blink 0.7s infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-    
 </style>
 
 <div id="donatePopup" class="popup">
@@ -364,18 +352,6 @@
 </div>
 
 <script>
-
-  document.addEventListener('DOMContentLoaded', function(){
-    var options = {
-        strings: ["CatLover", "GameMaker", "Hunter"],
-        typeSpeed: 50,
-        backSpeed: 50,
-        loop: true
-    };
-
-    var typed = new Typed("#typed", options);
-});
-  
     var popup = document.getElementById("donatePopup");
 
     var btn = document.getElementById("donateButton");
